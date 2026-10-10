@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 核心：加密、存取、数据模型。
+       目标框架故意是 net10.0 而不是 net10.0-windows —— 这里不许出现任何
+       Windows 专有 API，以后加 Avalonia 界面才能原样复用。 -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>密码库.核心</RootNamespace>
+    <AssemblyName>Vault.Core</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+</Project>

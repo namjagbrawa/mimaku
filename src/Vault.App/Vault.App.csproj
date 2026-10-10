@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 界面：WinForms，Windows 专用。所有 Windows 相关的东西都只能待在这个工程里。 -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>密码库.界面</RootNamespace>
+    <AssemblyName>密码库</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ApplicationIcon>密码库.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+
+    <!-- 版本号。改了代码就手动往上加一位，然后跑根目录的 部署.ps1 同步出去。
+         这个号会显示在标题栏，所以「我手上跑的是哪一版」永远看得见。 -->
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vault.Core\Vault.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ApplicationIcon 只管 exe 在资源管理器里的图标；窗体标题栏那个要 Form.Icon 显式赋值，
+         所以同一个 .ico 还得嵌成资源让代码读得到。见 界面元素.程序图标。 -->
+    <EmbeddedResource Include="密码库.ico" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 自检：纯控制台，不引用任何 NuGet 包，离线也能跑。
+       只依赖 Vault.Core，所以它跟核心一样是跨平台的。 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>密码库.自检</RootNamespace>
+    <AssemblyName>Vault.SelfTest</AssemblyName>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vault.Core\Vault.Core.csproj" />
+  </ItemGroup>
+
+</Project>
