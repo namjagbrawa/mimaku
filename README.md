@@ -30,7 +30,7 @@ dotnet run --project src\Vault.SelfTest
 dotnet publish src\Vault.App\Vault.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:DebugType=None -o publish\自包含
 ```
 
-公开下载地址和已签名发行物尚未公布。若要使用第三方发来的 EXE，请核对随正式发行页提供的 SHA-256；本项目目前没有代码签名证书，也未经过独立第三方安全审计。
+免费 Windows x64 ZIP：[下载密码库 1.0.0](https://download.doradreamland.com/mimaku_1.0.0_win-x64.zip)，SHA-256：`DC6618E4946FF02A4AFF586340DDECE6109AFDF714A6E2C52C588AB57FF86FE39`。[源码 ZIP](https://download.doradreamland.com/mimaku_1.0.0_source.zip)的 SHA-256 为 `D0033DF68F5941AD9BC2A8AB03BFA1873E9D8F05F0C8A0B08B91CD2CBDACF5D8`。如果通过别人转发的 ZIP 获取程序，请先核对发行包哈希。本项目目前没有代码签名证书或独立第三方安全审计，也尚未做普通用户环境的完整人工界面验收。
 
 ## 文件与许可
 
