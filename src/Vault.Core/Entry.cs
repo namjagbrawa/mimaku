@@ -8,6 +8,7 @@
 // WARRANTY; see the GNU General Public License for more details.
 // <https://www.gnu.org/licenses/>
 
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace 密码库.核心;
@@ -55,6 +56,10 @@ public sealed class 条目
     [JsonPropertyName("passwordChanged")]
     public DateTimeOffset? 密码更新 { get; set; }
 
+    // 读取新版备份时保留未知字段，编辑普通条目不会丢失其扩展数据。
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement>? 扩展字段 { get; set; }
+
     public 条目 复制()
     {
         return new 条目
@@ -70,6 +75,7 @@ public sealed class 条目
             创建 = 创建,
             更新 = 更新,
             密码更新 = 密码更新,
+            扩展字段 = 扩展字段?.ToDictionary(p => p.Key, p => p.Value.Clone()),
         };
     }
 
@@ -96,4 +102,7 @@ public sealed class 库内容
 {
     [JsonPropertyName("entries")]
     public List<条目> 条目表 { get; set; } = new();
+
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement>? 扩展字段 { get; set; }
 }

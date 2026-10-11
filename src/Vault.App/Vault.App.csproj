@@ -15,7 +15,7 @@
 
     <!-- 版本号。改了代码就手动往上加一位，然后跑根目录的 部署.ps1 同步出去。
          这个号会显示在标题栏，所以「我手上跑的是哪一版」永远看得见。 -->
-    <Version>1.0.0</Version>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>

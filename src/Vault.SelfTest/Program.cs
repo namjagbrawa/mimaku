@@ -53,6 +53,7 @@ internal static class 自检
             备份与原子写(场地);
             密码生成检查();
             导出导入(场地);
+            新版扩展往返(场地);
             if (参数.Length >= 2) 读旧版库(参数[0], 参数[1]);
             else Console.WriteLine("\n(没给旧库路径，跳过 v1 兼容性检查)");
         }
@@ -231,6 +232,31 @@ internal static class 自检
                       || csv文本.StartsWith("group,title,username", StringComparison.Ordinal));
         查("CSV 里逗号和引号被正确转义", csv文本.Contains("\"带,逗号和\"\"引号\"\"\"")
                                       || csv文本.Contains("\"带,逗号和\"\"引号\""));
+    }
+
+    private static void 新版扩展往返(string 场地)
+    {
+        var 路径 = Path.Combine(场地, "extension-roundtrip.vault");
+        const string 口令 = "合成接收副本测试口令";
+        using (var 原库 = 库.新建(路径, 口令))
+        {
+            var 内容 = JsonSerializer.Deserialize<库内容>(
+                """{"entries":[{"title":"合成分享条目","password":"sample","future":{"flag":true}}],"futureVault":[1,2]}""")!;
+            原库.内容.扩展字段 = 内容.扩展字段;
+            原库.放入(内容.条目表[0]);
+            原库.保存();
+        }
+        using (var 接收库 = 库.打开(路径, 口令))
+        {
+            查("免费版可打开兼容的合成副本", 接收库.条目表[0].密码 == "sample");
+            var 编辑 = 接收库.条目表[0].复制();
+            编辑.备注 = "接收者修改普通备注";
+            接收库.放入(编辑);
+            接收库.保存();
+        }
+        using var 复开 = 库.打开(路径, 口令);
+        查("编辑保存保留未知条目字段", 复开.条目表[0].扩展字段!["future"].GetProperty("flag").GetBoolean());
+        查("保存保留未知整库字段", 复开.内容.扩展字段!["futureVault"].GetArrayLength() == 2);
     }
 
     private static void 读旧版库(string 旧库路径, string 旧库口令)

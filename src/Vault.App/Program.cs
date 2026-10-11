@@ -28,6 +28,15 @@ internal static class 程序
         if (string.IsNullOrWhiteSpace(设置对象.库路径))
             设置对象.库路径 = 设置.默认库路径;
 
+        var 要新建 = false;
+        if (参数.Length == 0 || string.IsNullOrWhiteSpace(参数[0]))
+        {
+            using var 开始 = new 启动窗(设置对象.库路径);
+            if (开始.ShowDialog() != DialogResult.OK) return;
+            要新建 = 开始.要新建;
+            if (开始.选定路径 != null) 设置对象.库路径 = 开始.选定路径;
+        }
+
         // 锁定 → 解锁 → 再锁定…… 所以是个循环。
         // 锁定时主窗关闭、库被 Dispose（密钥当场抹掉），进程留着回到解锁界面；
         // 用户直接关窗口才是真的收工。
@@ -37,10 +46,11 @@ internal static class 程序
             库? 打开的库 = null;
             try
             {
-                打开的库 = 库.存在(设置对象.库路径)
+                打开的库 = !要新建 && 库.存在(设置对象.库路径)
                     ? 开一个已有的(设置对象, 上次锁定原因)
                     : 建一个新的(设置对象);
                 if (打开的库 == null) return;   // 用户中途取消了
+                要新建 = false;
 
                 设置对象.保存();
                 var 窗 = new 主窗(打开的库, 设置对象);
@@ -88,12 +98,6 @@ internal static class 程序
 
     private static 库? 建一个新的(设置 设置对象)
     {
-        var 要建 = MessageBox.Show(
-            $"还没有密码库，现在建一个吗？\n\n位置：{设置对象.库路径}\n\n" +
-            "下一步会让你设主密码。这个密码不存在任何地方——忘了，库里的东西谁也取不回来。",
-            "第一次使用", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-        if (要建 != DialogResult.Yes) return null;
-
         // 让用户自己挑地方：这文件以后装的是全部密码，得放在他知道、会备份的位置
         using (var 对话 = new SaveFileDialog
         {
@@ -104,7 +108,12 @@ internal static class 程序
             OverwritePrompt = true,
         })
         {
-            if (对话.ShowDialog() != DialogResult.OK) return null;
+            while (true)
+            {
+                if (对话.ShowDialog() != DialogResult.OK) return null;
+                if (!File.Exists(对话.FileName)) break;
+                界面元素.警告("这个文件已经存在。新建密码库不能覆盖已有库，请换一个文件名；要读取原文件，请选“打开已有库”。");
+            }
             设置对象.库路径 = 对话.FileName;
         }
 
@@ -116,7 +125,8 @@ internal static class 程序
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(设置对象.库路径)!);
-            if (File.Exists(设置对象.库路径)) File.Delete(设置对象.库路径);
+            if (File.Exists(设置对象.库路径))
+                throw new IOException("目标文件已经存在，未覆盖。请换一个文件名。");
             var 新库 = 库.新建(设置对象.库路径, 密码);
 
             // 设密码那一步已经说过"没有找回办法"，但那时用户正忙着想密码，多半没往心里去。
